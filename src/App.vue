@@ -10,7 +10,8 @@ export default {
     PointsDisplay,
     MapComponent,
     UpdatePoint,
-    CreatePoint
+    CreatePoint,
+
   },
   data() {
     return {
@@ -60,6 +61,9 @@ export default {
   mounted() {
     const pointsStore = usePointsStore();
     pointsStore.generatePoints();
+
+
+
   }
 };
 </script>

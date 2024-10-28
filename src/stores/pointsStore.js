@@ -1,4 +1,4 @@
-// pointsStore
+
 import { defineStore } from 'pinia';
 
 export const usePointsStore = defineStore('points', {
@@ -7,53 +7,58 @@ export const usePointsStore = defineStore('points', {
     allPointsSelected: JSON.parse(localStorage.getItem('allPointsSelected')) || false,
     searchQuery: '',
     activePoint: null,
-    searchResults: []
+    searchResults: [],
+    isLoading: false, // Добавляем состояние для имитации загрузки
   }),
   actions: {
-
     async generatePoints() {
-      if (this.points.length === 0) {
-        const batchSize = 100;
-        const totalPoints = 10000;
-        for (let i = 0; i < totalPoints; i += batchSize) {
-          const batch = Array.from({ length: batchSize }, (_, j) => {
-            const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-            const startDate = new Date(2023, 0, 1);
-            const endDate = new Date(2023, 11, 31);
-
-            const formatTime = (date) => date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            return {
-              title: "Точка",
-              id: i + j + 1,
-              x: Math.round(Math.random() * 100),
-              y: Math.round(Math.random() * 100),
-              activePoint: false,
-              r: Math.round(Math.random() * 100),
-              codpoints: Math.round(Math.random() * 1000000),
-              selected: false,
-              timeBefore: formatTime(randomDate(startDate, endDate)),
-              timeLoading: formatTime(randomDate(startDate, endDate)),
-              timeAfter: formatTime(randomDate(startDate, endDate)),
-              timeBeforeFact: formatTime(randomDate(startDate, endDate)),
-              timeAfterFact: formatTime(randomDate(startDate, endDate))
-            };
-          });
-
-          this.points.push(...batch);
-          this.savePointsToLocalStorage();
-
-          await new Promise(resolve => setTimeout(resolve, 0));
-        }
+      if (this.points.length > 0) {
+        // Если данные уже есть, не нужно имитировать загрузку
+        return;
       }
+
+      this.isLoading = true; // Устанавливаем состояние загрузки
+
+      const batchSize = 100;
+      const totalPoints = 10000;
+      for (let i = 0; i < totalPoints; i += batchSize) {
+        const batch = Array.from({ length: batchSize }, (_, j) => {
+          const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+          const startDate = new Date(2023, 0, 1);
+          const endDate = new Date(2023, 11, 31);
+
+          const formatTime = (date) => date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          return {
+            title: "Точка",
+            id: i + j + 1,
+            x: Math.round(Math.random() * 100),
+            y: Math.round(Math.random() * 100),
+            activePoint: false,
+            r: Math.round(Math.random() * 100),
+            codpoints: Math.round(Math.random() * 1000000),
+            selected: false,
+            timeBefore: formatTime(randomDate(startDate, endDate)),
+            timeLoading: formatTime(randomDate(startDate, endDate)),
+            timeAfter: formatTime(randomDate(startDate, endDate)),
+            timeBeforeFact: formatTime(randomDate(startDate, endDate)),
+            timeAfterFact: formatTime(randomDate(startDate, endDate))
+          };
+        });
+
+        this.points.push(...batch);
+        this.savePointsToLocalStorage();
+
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+
+      this.isLoading = false; // Завершаем состояние загрузки
     },
 
     toggleAllPoints() {
       this.allPointsSelected = !this.allPointsSelected;
 
-
       const selectedPoints = this.points.slice(0, 100);
-
 
       selectedPoints.forEach(point => {
         point.selected = this.allPointsSelected;
@@ -63,7 +68,6 @@ export const usePointsStore = defineStore('points', {
           point.activePoint = false;
         }
       });
-
 
       const remainingPoints = this.points.slice(100);
       remainingPoints.forEach(point => {
@@ -105,7 +109,6 @@ export const usePointsStore = defineStore('points', {
       }
     },
 
-
     setSearchQuery(query) {
       this.searchQuery = query;
       this.searchPoints();
@@ -132,22 +135,20 @@ export const usePointsStore = defineStore('points', {
     savePointsToLocalStorage() {
       localStorage.setItem('points', JSON.stringify(this.points));
     },
+
     addPoint(point) {
       const lastId = this.points.length > 0 ? this.points[this.points.length - 1].id : 0;
       point.id = lastId + 1;
       this.points.push(point);
       this.savePointsToLocalStorage();
     },
+
     deletePoint(pointId) {
       const index = this.points.findIndex(point => point.id === pointId);
       if (index !== -1) {
         this.points.splice(index, 1);
-
-
-
         this.savePointsToLocalStorage();
       }
     },
-
   }
 });
