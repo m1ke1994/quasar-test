@@ -1,70 +1,3 @@
-<!-- PointsDisplay -->
-
-<script>
-
-import { usePointsStore } from 'src/stores/pointsStore';
-
-export default {
-  data() {
-    return {
-      searchQuery: '',
-    };
-  },
-  computed: {
-    points() {
-      return usePointsStore().points;
-    },
-    filteredPoints() {
-      if (this.searchQuery) {
-        const id = parseInt(this.searchQuery, 10);
-        return this.points.filter(point => point.id === id);
-      }
-      return this.points;
-    },
-    lengthPointsTrue() {
-      return this.points.filter(point => point.selected).length;
-    },
-    allPointsSelected() {
-      return usePointsStore().allPointsSelected;
-    }
-  },
-  methods: {
-    searchPoint() {
-
-      this.searchQuery = '';
-    },
-    togglePointAll() {
-      usePointsStore().toggleAllPoints();
-      this.$emit('point-selectedAll');
-    },
-    togglePoint(pointId) {
-      console.log('togglePoint', pointId);
-      usePointsStore().togglePointSelection(pointId);
-      this.$emit('point-selected', pointId);
-    },
-    setActivePoint(pointId) {
-      usePointsStore().setActivePoint(pointId);
-    },
-    editPoint(point) {
-      this.$emit('edit-point', point);
-
-    },
-    createPoint() {
-      this.$emit('create-point');
-    },
-    deletePoint(pointId) {
-      usePointsStore().deletePoint(pointId);
-      this.$emit('point-deleted', pointId);
-    }
-
-  },
-  mounted() {
-    console.log('mounted');
-    usePointsStore().generatePoints();
-  }
-};
-</script>
-
 <template>
   <div class="flex justify-between items-center">
     <p class="text-3xl m-4 p-2 font-bold">Точки</p>
@@ -103,10 +36,70 @@ export default {
         <img class=" cursor-pointer hover:scale-125 transition ease-in duration-300" src="../assets/update.png"
           alt="update" @click="editPoint(point)">
       </div>
-
     </div>
   </div>
 </template>
+
+<script>
+import { usePointsStore } from 'src/stores/pointsStore';
+
+export default {
+  data() {
+    return {
+      searchQuery: '',
+    };
+  },
+  computed: {
+    points() {
+      return usePointsStore().points;
+    },
+    filteredPoints() {
+      if (this.searchQuery) {
+        const id = parseInt(this.searchQuery, 10);
+        return this.points.filter(point => point.id === id);
+      }
+      return this.points;
+    },
+    lengthPointsTrue() {
+      return this.points.filter(point => point.selected).length;
+    },
+    allPointsSelected() {
+      return usePointsStore().allPointsSelected;
+    }
+  },
+  methods: {
+    searchPoint() {
+      this.searchQuery = '';
+    },
+    togglePointAll() {
+      usePointsStore().toggleAllPoints();
+      this.$emit('point-selectedAll');
+    },
+    togglePoint(pointId) {
+      console.log('togglePoint', pointId);
+      usePointsStore().togglePointSelection(pointId);
+      this.$emit('point-selected', pointId);
+    },
+    setActivePoint(pointId) {
+      usePointsStore().setActivePoint(pointId);
+    },
+    editPoint(point) {
+      this.$emit('edit-point', point);
+    },
+    createPoint() {
+      this.$emit('create-point');
+    },
+    deletePoint(pointId) {
+      usePointsStore().deletePoint(pointId);
+      this.$emit('point-deleted', pointId);
+    }
+  },
+  mounted() {
+    console.log('mounted');
+    usePointsStore().generatePoints();
+  }
+};
+</script>
 
 <style scoped>
 .point {

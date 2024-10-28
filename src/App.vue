@@ -1,4 +1,3 @@
-<!-- App.vue -->
 <script>
 import PointsDisplay from './components/PointsDisplay.vue';
 import MapComponent from './components/MapComponent.vue';
@@ -27,15 +26,12 @@ export default {
       this.isEditing = true;
     },
     handlePointSelected(pointId) {
-
       this.$refs.mapComponent.updateMarkers(this.$refs.mapComponent.pointsStore.points);
     },
     AllhandlePointSelected() {
-
       this.$refs.mapComponent.updateMarkers(this.$refs.mapComponent.pointsStore.points);
     },
     handlePointActive() {
-
       this.$refs.mapComponent.updateMarkers(this.$refs.mapComponent.pointsStore.points);
     },
     handleSaveChanges(updatedPoint) {
@@ -58,10 +54,8 @@ export default {
       this.isCreating = false;
     },
     handlePointDeleted() {
-
       this.$refs.mapComponent.updateMarkers(this.$refs.mapComponent.pointsStore.points);
     }
-
   },
   mounted() {
     const pointsStore = usePointsStore();
@@ -80,7 +74,7 @@ export default {
       <MapComponent ref="mapComponent" @pointActive="handlePointActive" />
     </div>
     <div v-else-if="isEditing">
-      <UpdatePoint :point="selectedPoint" v-if="selectedPomdint" @save-changes="handleSaveChanges"
+      <UpdatePoint :point="selectedPoint" v-if="selectedPoint" @save-changes="handleSaveChanges"
         @cancel-changes="handleCancelChanges" />
     </div>
     <div v-else-if="isCreating">
