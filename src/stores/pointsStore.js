@@ -8,16 +8,16 @@ export const usePointsStore = defineStore('points', {
     searchQuery: '',
     activePoint: null,
     searchResults: [],
-    isLoading: false, // Добавляем состояние для имитации загрузки
+    isLoading: false,
   }),
   actions: {
     async generatePoints() {
       if (this.points.length > 0) {
-        // Если данные уже есть, не нужно имитировать загрузку
+
         return;
       }
 
-      this.isLoading = true; // Устанавливаем состояние загрузки
+      this.isLoading = true;
 
       const batchSize = 100;
       const totalPoints = 10000;
@@ -52,7 +52,7 @@ export const usePointsStore = defineStore('points', {
         await new Promise(resolve => setTimeout(resolve, 0));
       }
 
-      this.isLoading = false; // Завершаем состояние загрузки
+      this.isLoading = false;
     },
 
     toggleAllPoints() {

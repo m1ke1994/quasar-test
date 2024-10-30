@@ -15,6 +15,7 @@
   "dependencies": {
     "@quasar/extras": "^1.16.4",
     "maptalks": "^1.0.0-rc.39",
+    "mitt": "^3.0.1",
     "path": "^0.12.7",
     "pinia": "^2.2.4",
     "quasar": "^2.16.0",

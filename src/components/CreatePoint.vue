@@ -1,103 +1,3 @@
-<script>
-import { usePointsStore } from 'src/stores/pointsStore';
-
-export default {
-    props: {
-        isCreating: Boolean
-    },
-    data() {
-        return {
-            title: '',
-            id: '',
-            x: '',
-            y: '',
-            activePoint: false,
-            r: '',
-            codpoints: '',
-            selected: false,
-            timeBefore: '',
-            timeLoading: '',
-            timeAfter: '',
-            timeBeforeFact: '',
-            timeAfterFact: '',
-            errorMessage: '',
-        }
-    },
-    methods: {
-        savePoint() {
-
-            const x = parseFloat(this.x);
-            const y = parseFloat(this.y);
-            const r = parseFloat(this.r);
-            const codpoints = parseInt(this.codpoints, 10);
-
-            const timeBefore = this.validateTime(this.timeBefore);
-            const timeLoading = this.validateTime(this.timeLoading);
-            const timeAfter = this.validateTime(this.timeAfter);
-            const timeBeforeFact = this.validateTime(this.timeBeforeFact);
-            const timeAfterFact = this.validateTime(this.timeAfterFact);
-
-            if (isNaN(x) || isNaN(y) || isNaN(r) || isNaN(codpoints) ||
-                !timeBefore || !timeLoading || !timeAfter || !timeBeforeFact || !timeAfterFact) {
-                this.errorMessage = 'Пожалуйста, проверьте введенные данные.';
-                return;
-            }
-
-            const point = {
-                title: this.title,
-                x: x,
-                y: y,
-                activePoint: this.activePoint,
-                r: r,
-                codpoints: codpoints,
-                selected: this.selected,
-                timeBefore: timeBefore,
-                timeLoading: timeLoading,
-                timeAfter: timeAfter,
-                timeBeforeFact: timeBeforeFact,
-                timeAfterFact: timeAfterFact,
-            };
-
-
-            const pointsStore = usePointsStore();
-            pointsStore.addPoint(point);
-
-            this.cancel();
-
-
-            this.$emit('save-point');
-        },
-        cancel() {
-
-            this.title = '';
-            this.id = '';
-            this.x = '';
-            this.y = '';
-            this.activePoint = false;
-            this.r = '';
-            this.codpoints = '';
-            this.selected = false;
-            this.timeBefore = '';
-            this.timeLoading = '';
-            this.timeAfter = '';
-            this.timeBeforeFact = '';
-            this.timeAfterFact = '';
-            this.errorMessage = '';
-
-
-            this.$emit('cancel-create');
-        },
-        validateTime(time) {
-            const timeRegex = /^\d{2}:\d{2}$/;
-            if (!timeRegex.test(time)) {
-                return null;
-            }
-            return time;
-        }
-    }
-}
-</script>
-
 <template>
     <div class="w-full">
         <h1 class="text-3xl text-left my-10">Создание точки</h1>
@@ -165,5 +65,103 @@ export default {
         </div>
     </div>
 </template>
+
+<script>
+import { usePointsStore } from 'src/stores/pointsStore';
+import { emitter } from 'src/boot/mitt';
+
+export default {
+    props: {
+        isCreating: Boolean
+    },
+    data() {
+        return {
+            title: '',
+            id: '',
+            x: '',
+            y: '',
+            activePoint: false,
+            r: '',
+            codpoints: '',
+            selected: false,
+            timeBefore: '',
+            timeLoading: '',
+            timeAfter: '',
+            timeBeforeFact: '',
+            timeAfterFact: '',
+            errorMessage: '',
+        }
+    },
+    methods: {
+        savePoint() {
+            const x = parseFloat(this.x);
+            const y = parseFloat(this.y);
+            const r = parseFloat(this.r);
+            const codpoints = parseInt(this.codpoints, 10);
+
+            const timeBefore = this.validateTime(this.timeBefore);
+            const timeLoading = this.validateTime(this.timeLoading);
+            const timeAfter = this.validateTime(this.timeAfter);
+            const timeBeforeFact = this.validateTime(this.timeBeforeFact);
+            const timeAfterFact = this.validateTime(this.timeAfterFact);
+
+            if (isNaN(x) || isNaN(y) || isNaN(r) || isNaN(codpoints) ||
+                !timeBefore || !timeLoading || !timeAfter || !timeBeforeFact || !timeAfterFact) {
+                this.errorMessage = 'Пожалуйста, проверьте введенные данные.';
+                return;
+            }
+
+            const point = {
+                title: this.title,
+                x: x,
+                y: y,
+                activePoint: this.activePoint,
+                r: r,
+                codpoints: codpoints,
+                selected: this.selected,
+                timeBefore: timeBefore,
+                timeLoading: timeLoading,
+                timeAfter: timeAfter,
+                timeBeforeFact: timeBeforeFact,
+                timeAfterFact: timeAfterFact,
+            };
+
+            const pointsStore = usePointsStore();
+            pointsStore.addPoint(point);
+
+            this.cancel();
+
+            this.$emit('save-point');
+            console.log('Emitting point-created event');
+            emitter.emit('point-created');
+        },
+        cancel() {
+            this.title = '';
+            this.id = '';
+            this.x = '';
+            this.y = '';
+            this.activePoint = false;
+            this.r = '';
+            this.codpoints = '';
+            this.selected = false;
+            this.timeBefore = '';
+            this.timeLoading = '';
+            this.timeAfter = '';
+            this.timeBeforeFact = '';
+            this.timeAfterFact = '';
+            this.errorMessage = '';
+
+            this.$emit('cancel-create');
+        },
+        validateTime(time) {
+            const timeRegex = /^\d{2}:\d{2}$/;
+            if (!timeRegex.test(time)) {
+                return null;
+            }
+            return time;
+        }
+    }
+}
+</script>
 
 <style></style>
